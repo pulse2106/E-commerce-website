@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}{{ category_name }} - Cosmetz{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='category/category.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="category-header">
+    <h1>{{ category_name|capitalize }}</h1>
+    <p class="category-description">Browse our collection of {{ category_name }}</p>
+</section>
+
+<div class="category-content">
+    <aside class="filters">
+        <form id="filterForm" action="{{ url_for('category', category_name=category_name) }}" method="get">
+            <input type="hidden" name="q" value="{{ search_query or '' }}">
+            <input type="hidden" name="per_page" value="{{ per_page }}">
+
+            <div class="filter-group">
+                <h3>Sort By Price</h3>
+                <select name="sort" class="filter-select">
+                    <option value="default" {% if sort_type=='default' %}selected{% endif %}>Default</option>
+                    <option value="asc" {% if sort_type=='asc' %}selected{% endif %}>Lowest to Highest</option>
+                    <option value="desc" {% if sort_type=='desc' %}selected{% endif %}>Highest to Lowest</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <h3>Price Range</h3>
+                <div class="price-input-container">
+                    <input type="number" name="min_price" placeholder="Min" value="{{ min_p if min_p else '' }}">
+                    <span>-</span>
+                    <input type="number" name="max_price" placeholder="Max" value="{{ max_p if max_p else '' }}">
+                </div>
+            </div>
+            {% if category_name != 'all' %}
+            <div class="filter-group">
+                <h3>Subcategories</h3>
+                <div class="checkbox-list">
+                    {% for sub in subcategories %}
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sub" value="{{ sub }}" {% if sub in selected_subs %}checked{% endif
+                            %}>
+                        {{ sub.title() }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <button type="button" class="apply-btn" onclick="applyFiltersAjax()">Apply Filters</button>
+            <a href="{{ url_for('category', category_name=category_name) }}" class="reset-link">Clear All</a>
+        </form>
+    </aside>
+
+    <section class="products-grid" id="productsGrid">
+        {% if products %}
+        {% for product in products %}
+        <a href="{{ url_for('product', id=product.id) }}" class="product-card-link">
+            <div class="product-card">
+                <img src="{{ product.image_url if product.image_url and product.image_url != 'MISSING' else url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}"
+                    onerror="this.src='{{ url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}'"
+                    alt="{{ product.product_name }}">
+                <h3 class="truncate">{{ product.product_name }}</h3>
+                <p class="product-description">{{ product.brand }}</p>
+                <p class="price">
+                    {{ format_currency(product.price) }}
+                </p>
+                <button class="add-to-cart" data-product-id="{{ product.id }}">View more</button>
+            </div>
+        </a>
+        {% endfor %}
+        {% else %}
+        <p class="no-products">No products found in this category.</p>
+        {% endif %}
+    </section>
+</div>
+
+<div id="paginationContainer">
+    <div class="pagination-controls-top">
+        <label for="perPageSelect">Show: </label>
+        <select id="perPageSelect" onchange="changePerPage(this.value)">
+            <option value="30" {% if per_page==30 %}selected{% endif %}>30</option>
+            <option value="60" {% if per_page==60 %}selected{% endif %}>60</option>
+            <option value="90" {% if per_page==90 %}selected{% endif %}>90</option>
+        </select>
+    </div>
+
+    <div class="pagination-wrapper" id="paginationWrapper">
+        {% if pagination.has_prev %}
+        <button class="pagination-btn" onclick="handlePageChange(event, {{ pagination.prev_num }})">&laquo;
+            Previous</button>
+        {% endif %}
+
+        {% for page_num in pagination.iter_pages() %}
+        {% if page_num %}
+        {% if page_num == pagination.page %}
+        <span class="pagination-btn active">{{ page_num }}</span>
+        {% else %}
+        <button class="pagination-btn" onclick="handlePageChange(event, {{ page_num }})">{{ page_num }}</button>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+        {% if pagination.has_next %}
+        <button class="pagination-btn" onclick="handlePageChange(event, {{ pagination.next_num }})">Next
+            &raquo;</button>
+        {% else %}
+        <span class="pagination-btn disabled">Next &raquo;</span>
+        {% endif %}
+
+        <span class="page-indicator">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+    </div>
+</div>
+
+<button id="backToTop" class="back-to-top" title="Lên đầu trang">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+</button>
+
+<script>
+    const categoryName = "{{ category_name }}";
+
+    // Wrapper function to handle both preventDefault and pagination in one call
+    function handlePageChange(event, page) {
+        preventPageJump(event);
+        renderProducts(page);
+    }
+
+    function applyFiltersAjax() {
+        const form = document.getElementById('filterForm');
+        const params = buildQueryString(form, { page: 1 }); // Reset to page 1
+
+        fetch(`/category/${categoryName}?${params}`)
+            .then(response => response.text())
+            .then(html => {
+                updateProductsAndPagination(html);
+            })
+            .catch(error => console.error('Error applying filters:', error));
+    }
+
+    function changePerPage(value) {
+        const form = document.getElementById('filterForm');
+        const params = buildQueryString(form, { per_page: value, page: 1 });
+
+        fetch(`/category/${categoryName}?${params}`)
+            .then(response => response.text())
+            .then(html => {
+                updateProductsAndPagination(html);
+            })
+            .catch(error => console.error('Error changing per page:', error));
+    }
+
+    function renderProducts(page) {
+        const form = document.getElementById('filterForm');
+        const params = buildQueryString(form, { page: page });
+
+        fetch(`/category/${categoryName}?${params}`)
+            .then(response => response.text())
+            .then(html => {
+                updateProductsAndPagination(html);
+                restoreScrollPosition(0, true);
+            })
+            .catch(error => console.error('Error loading page:', error));
+    }
+
+    function updateProductsAndPagination(html) {
+        // Parse the returned HTML
+        const productsGrid = extractElementFromHTML(html, '#productsGrid');
+        if (productsGrid) {
+            document.getElementById('productsGrid').innerHTML = productsGrid.innerHTML;
+        }
+
+        // Extract pagination and update
+        const paginationWrapper = extractElementFromHTML(html, '#paginationWrapper');
+        if (paginationWrapper) {
+            document.getElementById('paginationWrapper').innerHTML = paginationWrapper.innerHTML;
+        }
+    }
+
+    const backToTopBtn = document.getElementById('backToTop');
+
+    backToTopBtn.addEventListener('click', () => {
+        restoreScrollPosition(0, true);
+    });
+</script>
+{% endblock %}

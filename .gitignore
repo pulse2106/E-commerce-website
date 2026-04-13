@@ -1,0 +1,11 @@
+# Exclude scraper scripts
+flash.py
+update_images_api.py
+
+# Recommended: Exclude Python cache and local environments
+__pycache__/
+*.pyc
+venv/
+.env
+instance/
+.DS_Store

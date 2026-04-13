@@ -1,0 +1,431 @@
+/* ====== VARIABLES ====== */
+/* Colors inherited from base.css - only override font variables here */
+:root {
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* ====== LAYOUT ====== */
+.product-page-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 40px 100px;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.breadcrumbs a {
+    color: #888;
+    transition: color 0.3s;
+}
+
+.breadcrumbs a:hover {
+    color: var(--accent-sand);
+}
+
+.breadcrumbs .sep {
+    margin: 0 10px;
+}
+
+.breadcrumbs .current {
+    color: var(--primary-charcoal);
+    font-weight: 600;
+}
+
+/* Main Container: Split Layout */
+.product-main-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Image wider than details */
+    gap: 60px;
+    align-items: start;
+}
+
+/* ====== GALLERY (Left) ====== */
+.product-gallery {
+    position: relative;
+}
+
+.main-image-frame {
+    width: 100%;
+    height: 500px;
+    background-color: #f0f0f0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-image-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.main-image-frame img:hover {
+    transform: scale(1.05); /* Gentle zoom on hover */
+}
+
+.thumbnail-row {
+    display: flex;
+    gap: 15px;
+}
+
+.thumb {
+    width: 80px;
+    height: 100px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    border: 1px solid transparent;
+}
+
+.thumb.active, .thumb:hover {
+    opacity: 1;
+    border-bottom: 2px solid var(--accent-sand);
+}
+
+.thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ====== DETAILS PANEL (Right) ====== */
+.product-details-panel {
+    position: sticky;
+    top: 140px; /* Accounts for fixed header */
+}
+
+.p-title {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--primary-charcoal);
+    line-height: 1.2;
+    margin-bottom: 5px;
+}
+
+.p-brand {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.p-price-wrapper {
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(45, 41, 38, 0.1);
+    padding-bottom: 20px;
+}
+
+.p-price {
+    font-family: var(--font-sans);
+    font-size: 1.5rem;
+    color: var(--primary-charcoal);
+    font-weight: 600;
+}
+
+/* Actions */
+.p-actions {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+.quantity-selector button {
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.quantity-selector button:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.quantity-selector input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background-color: var(--secondary-linen);
+    height: 40px;
+}
+.quantity-selector input::-webkit-outer-spin-button,
+.quantity-selector input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn-add-cart {
+    flex: 1;
+    height: 50px;
+    background-color: var(--primary-charcoal);
+    color: var(--secondary-linen);
+    border: 1px solid var(--primary-charcoal);
+    text-transform: uppercase;
+    font-family: var(--font-sans);
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    background-color: transparent;
+    color: var(--primary-charcoal);
+}
+
+.btn-buy-now {
+    width: 100%;
+    height: 50px;
+    background-color: var(--accent-sand);
+    color: #fff;
+    border: none;
+    text-transform: uppercase;
+    font-family: var(--font-sans);
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-bottom: 40px;
+}
+
+.btn-buy-now:hover {
+    background-color: #c09060;
+}
+
+/* ====== ACCORDION (Specs & Reviews) ====== */
+.accordion-container {
+    border-top: 1px solid rgba(45, 41, 38, 0.1);
+}
+
+.accordion-item {
+    border-bottom: 1px solid rgba(45, 41, 38, 0.1);
+}
+
+.accordion-header {
+    width: 100%;
+    padding: 20px 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-align: left;
+    
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--primary-charcoal);
+    transition: color 0.3s;
+}
+
+.accordion-header:hover {
+    color: var(--accent-sand);
+}
+}
+
+.accordion-header i {
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+}
+
+/* Expanded State */
+.accordion-header.active i {
+    transform: rotate(45deg); /* Turns plus to x */
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+/* Content Styling inside accordion */
+.spec-table {
+    width: 100%;
+    margin-bottom: 20px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+}
+
+.spec-table td {
+    padding: 8px 0;
+    color: #666;
+}
+
+.spec-table td:first-child {
+    font-weight: 600;
+    width: 120px;
+    color: var(--primary-charcoal);
+}
+
+/* Reviews Styling */
+.review-form {
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.review-form textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    font-family: var(--font-sans);
+    margin-bottom: 10px;
+    outline: none;
+    resize: none;
+}
+
+.btn-submit-review {
+    background-color: var(--primary-charcoal);
+    color: var(--secondary-linen);
+    border: none;
+    padding: 8px 20px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.review-card {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.reviewer-name {
+    font-weight: 700;
+    color: var(--primary-charcoal);
+}
+
+.review-date {
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.review-body {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Login prompt */
+.login-prompt {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 10px 0 20px;
+}
+
+.login-prompt a {
+    color: var(--accent-sand);
+    text-decoration: underline;
+}
+
+/* Comments Pagination */
+.comments-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(212, 163, 115, 0.2);
+}
+
+.pagination-link {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--accent-sand);
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid rgba(212, 163, 115, 0.3);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+.pagination-link:hover {
+    background-color: rgba(212, 163, 115, 0.08);
+    border-color: var(--accent-sand);
+}
+
+.pagination-page {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--primary-charcoal);
+    text-decoration: none;
+    padding: 6px 10px;
+    border: 1px solid rgba(212, 163, 115, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    min-width: 36px;
+    text-align: center;
+    display: inline-block;
+}
+
+.pagination-page:hover {
+    background-color: rgba(212, 163, 115, 0.1);
+    border-color: var(--accent-sand);
+}
+
+.pagination-page.active {
+    background-color: var(--accent-sand);
+    color: var(--secondary-linen);
+    border-color: var(--accent-sand);
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .product-main-container {
+        grid-template-columns: 1fr; /* Stack */
+        gap: 40px;
+    }
+    
+    .product-details-panel {
+        position: static; /* Remove sticky on mobile */
+    }
+    
+    .comments-pagination {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}

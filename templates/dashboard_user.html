@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}My Account - Cosmetz{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
+<link rel="stylesheet" href="{{url_for('static', filename = 'dashboard_user/dashboard_user.css')}}" />
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+
+    <aside class="dashboard-sidebar fade-in-left">
+        <div class="user-profile-summary">
+            <div class="user-avatar">
+                {{ session.get('username', 'User')[0] | upper }}
+            </div>
+            <h3 class="user-name">{{ session.get('username', 'Guest User') }}</h3>
+            <p class="user-email">{{user.email if user and user.email else 'Email not updated yet!'}}</p>
+        </div>
+
+        <nav>
+            <ul class="dash-nav">
+                <li class="dash-nav-item">
+                    <a href="#" class="dash-nav-link active" data-section="overview">Overview</a>
+                </li>
+                <li class="dash-nav-item">
+                    <a href="#" class="dash-nav-link" data-section="orders">My Orders</a>
+                </li>
+                <li class="dash-nav-item">
+                    <a href="#" class="dash-nav-link" data-section="information">Information</a>
+                </li>
+                <li class="dash-nav-item">
+                    <a href="#" class="dash-nav-link" data-section="cart">My Cart</a>
+                </li>
+                <li class="dash-nav-item" style="margin-top: 20px;">
+                    <a href="{{url_for('logout')}}" class="dash-nav-link sign-out-link" style="opacity: 0.6;">Sign Out</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+    
+
+    <section class="dashboard-content">
+       <div id="overview-section" class="dashboard-section">
+    <h1 id="greetingTitle" class="fade-in-up">Welcome, {{ session.get('username', 'Beautiful') }}!</h1>
+    <p class="welcome-sub fade-in-up delay-1">Here is an overview of your status.</p>
+
+    <div class="stats-grid">
+        <div class="stat-card fade-in-up delay-2">
+            <span class="stat-value">{{ "%02d"|format(active_orders_count) }}</span>
+            <span class="stat-label">Active Orders</span>
+        </div>
+        <div class="stat-card fade-in-up delay-3">
+            <span class="stat-value">{{ "{:,}".format(comments_count) }}</span>
+            <span class="stat-label">My Comments</span>
+        </div>
+        <div class="stat-card fade-in-up delay-4">
+            <span class="stat-value">{{ "%02d"|format(cart_items_count) }}</span>
+            <span class="stat-label">Cart Items</span>
+        </div>
+    </div>
+
+    <div class="recent-activity fade-in-up delay-5">
+        <div class="section-header-dash">
+            <h2>On going orders</h2>
+            <a href="#" class="view-all-btn" onclick="switchSection('orders')">View All Orders</a>
+        </div>
+
+        {% if ongoing_orders %}
+        <div class="order-list">
+            {% for order in ongoing_orders %}
+            <div class="order-item">
+                <div class="order-info">
+                    <h3>Order #{{ order.id }}</h3>
+                    <p class="order-meta">
+                        Placed on {{ order.created_at.strftime('%b %d, %Y') }} • 
+                        {{ order.items|length }} Item{% if order.items|length > 1 %}s{% endif %}
+                    </p>
+                </div>
+                <div class="order-price">
+                    {{ format_currency(order.total_price) }}
+                </div>
+                <div class="order-status {{ order.status.lower() }}">
+                    {{ order.status }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state" style="text-align: center; padding: 30px; color: #888;">
+            <p>No active orders at the moment.</p>
+            <a href="{{ url_for('home') }}" style="color: var(--accent-sand);">Start shopping!</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+        <div id="information-section" class="dashboard-section" style="display: none;">
+            <div class="section-header-dash">
+                <h2>Personal Information</h2>
+                <p class="welcome-sub">Update your personal details and preferences</p>
+            </div>
+
+            <form id="info-form" class="info-form-grid fade-in-up" action="{{ url_for('update_profile') }}"
+                method="POST">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ session.get('username', '') }}" readonly
+                        class="readonly-input">
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address<span class="optional-label">(optional)</span></label>
+                    <input type="email" id="email" name="email" value="{{ user.email if user.email else ''}}"
+                        placeholder="Enter your email">
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="password-field">
+                        <input type="password" id="password" name="password" value="{{ user.pass_word }}" readonly
+                            class="readonly-input">
+                        <button type="button" class="toggle-btn" id="toggle-password">Show</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="full_name">Full Name <span class="optional-label">(optional)</span></label>
+                    <input type="text" id="full_name" name="full_name"
+                        value="{{ user.full_name if user.full_name else ''}}" placeholder="Enter your full name">
+                </div>
+
+                <div class="input-group">
+                    <label for="birth_date">Date of Birth <span class="optional-label">(optional)</span></label>
+                    <input type="date" id="birth_date" name="birth_date"
+                        value="{{ user.birth_date if user.birth_date else ''}}" placeholder="Your date of birth">
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Phone Number <span class="optional-label">(optional)</span></label>
+                    <input type="tel" id="phone" name="phone" value="{{ user.phone if user.phone else ''}}"
+                        placeholder="Enter your phone number">
+                </div>
+
+                <div class="input-group full-width">
+                    <label for="address">Shipping Address <span class="optional-label"></span></label>
+                    <textarea id="address" name="address" rows="3"
+                        placeholder="Enter your shipping address">{{ user.address if user.address}}</textarea>
+                </div>
+
+                <div class="input-group full-width">
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="orders-section" class="dashboard-section" style="display: none;">
+            <div class="section-header-dash">
+                <h2>My Orders</h2>
+                <p class="welcome-sub">Track your order history and status</p>
+            </div>
+
+            {% if orders %}
+            <div class="order-list">
+                {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <span><strong>Order #{{ order.id }}</strong> • {{ order.created_at.strftime('%Y-%m-%d %H:%M')
+                            }}</span>
+                        <span class="status-badge {{ order.status.lower() }}">{{ order.status }}</span>
+                    </div>
+                    <div class="order-items-mini">
+                        {% for item in order.items %}
+                        <p>
+                            {% if item.product %}
+                            {{ item.product.product_name }} x {{ item.quantity }}
+                            {% else %}
+                            Product ID: {{ item.product_id }} x {{ item.quantity }}
+                            {% endif %}
+                        </p>
+                        {% endfor %}
+                    </div>
+                    <div class="order-footer">
+                        <strong>Total: {{ format_currency(order.total_price) }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-cart" style="text-align: center; padding: 50px;">
+                <p>You haven't placed any orders yet. <a href="{{ url_for('home') }}">Start shopping!</a></p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div id="cart-section" class="dashboard-section" style="display: none;">
+            <div class="recent-activity fade-in-up delay-5">
+                <div class="section-header-dash">
+                    <h2>My cart</h2>
+                </div>
+                <div class="cart-container">
+                    {% if cart_items %}
+                    <div class="cart-list">
+                        {% for item in cart_items %}
+                        <div class="cart-item-row" id="cart-item-{{ item.id }}">
+                            <div class="cart-main-layout">
+                                <div class="col-check">
+                                    <input type="checkbox" class="product-checkbox"
+                                        data-price="{{ item.product.price }}" data-qty="{{ item.quantity }}"
+                                        onchange="calculateTotal()" {% if request.args.get('checked') == '1' and request.args.get('product_id')|int == item.product_id %}checked{% endif %}>
+                                </div>
+                                <div class="col-product">
+                                    <div class="product-details">
+                                        <h3 class="truncate">{{ item.product.product_name }}</h3>
+                                    </div>
+                                </div>
+                                <div class="col-quantity">
+                                    <span class="quantity-label">Quantity</span>
+                                    <span class="quantity-value">{{ item.quantity }}</span>
+                                </div>
+                                <div class="col-price">
+                                    <span class="price-label">Price</span>
+                                    <span class="price-value">{{ format_currency(item.product.price) }}</span>
+                                </div>
+                                <div class="col-total">
+                                    <span class="total-label">Subtotal</span>
+                                    <span class="total-value">{{ format_currency(item.product.price * item.quantity) }}</span>
+                                </div>
+                                <div class="col-delete">
+                                    <button type="button" class="btn-x-delete" onclick="deleteCartItem({{ item.id }})"
+                                        title="Remove item">×</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="cart-summary">
+                        <div class="summary-details">
+                            <span>Selected items: <strong id="selected-count">0</strong></span>
+                            <span>Total Price: <strong id="total-price">{{ format_currency(0) }}</strong></span>
+                        </div>
+                        <button class="checkout-btn" onclick="processCheckout()">Proceed to Checkout</button>
+                    </div>
+                    {% else %}
+                    <div class="empty-cart">
+                        <p>Your cart is empty. <a href="{{ url_for('home') }}">Shop now!</a></p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+</div>
+</section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const CURRENT_CURRENCY = "{{ session.get('currency', 'USD') }}";
+    const EXCHANGE_RATE = 84.0;
+</script>
+<script src="{{url_for('static', filename = 'dashboard_user/dashboard_user.js')}}"></script>
+{% endblock %}

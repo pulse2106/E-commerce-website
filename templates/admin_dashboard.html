@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Cosmetz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.26.0/dist/plotly.min.js"></script>
+    <script src="{{ url_for('static', filename='admin/admin.js') }}" defer></script>
+</head>
+<body>
+
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="cosmetz-logo-1">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Cosmetz" class="header-logo-img">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item">Dashboard</a>
+                <a href="{{ url_for('admin_orders') }}" class="nav-item">Orders</a>
+                <a href="{{ url_for('admin_products') }}" class="nav-item">Products</a>
+                <a href="{{ url_for('admin_customers') }}" class="nav-item">Customers</a>
+                <a href="{{ url_for('home') }}" class="nav-item">Back to Site</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-header">
+                <h1 class="admin-title">Dashboard Overview</h1>
+                
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="currency-selector">
+                        <select onchange="location = this.value;" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 0.9rem; cursor: pointer;">
+                            <option value="{{ url_for('set_currency', currency_code='INR') }}" {% if session.get('currency', 'INR') == 'INR' %}selected{% endif %}>INR (₹)</option>
+                            <option value="{{ url_for('set_currency', currency_code='USD') }}" {% if session.get('currency', 'INR') == 'USD' %}selected{% endif %}>USD ($)</option>
+                        </select>
+                    </div>
+                    <div class="user-profile">Administrator</div>
+                </div>
+            </header>
+
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Revenue</div>
+                    <div class="kpi-value">{{ format_currency(revenue) }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Active Orders</div>
+                    <div class="kpi-value">{{ orders }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Customers</div>
+                    <div class="kpi-value">{{ users }}</div>
+                </div>
+            </div>
+
+            <div class="chart-row">
+                <div class="chart-container">
+                    <h3>Revenue Trend</h3>
+                    <div id="revenue-chart"></div>
+                </div>
+                <div class="chart-container">
+                    <h3>Order Breakdown</h3>
+                    <div id="status-chart"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Data injected from Flask
+        const revDataRaw = {{ chart_revenue | safe if chart_revenue else 'null' }};
+        const statDataRaw = {{ chart_status | safe if chart_status else 'null' }};
+        
+        let revData = null;
+        let statData = null;
+        
+        try {
+            revData = typeof revDataRaw === 'string' ? JSON.parse(revDataRaw) : revDataRaw;
+        } catch(e) {
+            console.error("Error parsing revenue data:", e);
+        }
+        
+        try {
+            statData = typeof statDataRaw === 'string' ? JSON.parse(statDataRaw) : statDataRaw;
+        } catch(e) {
+            console.error("Error parsing status data:", e);
+        }
+        
+        console.log("Revenue data:", revData);
+        console.log("Status data:", statData);
+        
+        const config = { responsive: true, displayModeBar: false };
+
+        if(revData && revData.data && revData.layout) {
+            Plotly.newPlot('revenue-chart', revData.data, revData.layout, config);
+        }
+        if(statData && statData.data && statData.layout) {
+            Plotly.newPlot('status-chart', statData.data, statData.layout, config);
+        }
+    </script>
+</body>
+</html>

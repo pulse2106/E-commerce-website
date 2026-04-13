@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Cosmetz - Define Elegance{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename = 'main_page/main_page.css')}}" />
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-video-section" id="hero">
+
+    <video class="hero-video-backdrop" id="heroVideo" autoplay muted loop playsinline>
+        <source src="{{url_for('static', filename='videos/istockphoto-1816492504-640_adpp_is.mp4')}}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <p class="hero-subtitle">Est. 2000 • Mumbai • Paris</p>
+        <div class="cosmetz-logo-1">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Cosmetz" class="main-logo-img">
+        </div>
+        <h1 class="hero-title">Redefining<br>Modern Beauty</h1>
+        <a href="#shop" class="hero-btn">Explore Collection</a>
+    </div>
+</section>
+
+<div class="marquee-container">
+    <div class="marquee-content">
+        <span>Sustainable Luxury</span> •
+        <span>Cruelty Free</span> •
+        <span>Dermatologist Approved</span> •
+        <span>Sustainable Luxury</span> •
+        <span>Cruelty Free</span> •
+        <span>Dermatologist Approved</span> •
+        <span>Sustainable Luxury</span> •
+        <span>Cruelty Free</span> •
+        <span>Dermatologist Approved</span>
+    </div>
+</div>
+
+<section class="category-nav-section" id="shop">
+    <div class="section-header">
+        <h2>Curated For You</h2>
+        <p style="color: #666; font-style: italic;">Select a category to filter the collection</p>
+    </div>
+
+    <div class="custom-dropdown-container">
+        <div class="dropdown-trigger" id="categoryTrigger">
+            <span id="selectedCategory">View All Products</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+
+        <div class="dropdown-menu" id="categoryMenu">
+            <div class="dropdown-item" data-value="all"><a href="{{ url_for('category', category_name='all') }}">View All</a></div>
+            <div class="dropdown-item" data-value="skincare"><a href="{{ url_for('category', category_name='Skincare') }}">Skin Care</a></div>
+            <div class="dropdown-item" data-value="body"><a href="{{ url_for('category', category_name='Body') }}">Body</a></div>
+            <div class="dropdown-item" data-value="eyes"><a href="{{ url_for('category', category_name='Eyes') }}">Eyes</a></div>
+            <div class="dropdown-item" data-value="face"><a href="{{ url_for('category', category_name='Face') }}">Face</a></div>
+            <div class="dropdown-item" data-value="lips"><a href="{{ url_for('category', category_name='Lips') }}">Lips</a></div>
+            <div class="dropdown-item" data-value="hair"><a href="{{ url_for('category', category_name='Hair') }}">Hair</a></div>
+        </div>
+    </div>
+</section>
+
+<section class="products-container">
+
+    <div class="product-group">
+        <div class="grid-title-wrapper">
+            <h3 class="grid-title">Most viewed</h3>
+            <a href="{{ url_for('category', category_name='all') }}" class="grid-link">Shop All</a>
+        </div>
+
+        <div class="high-end-grid">
+            {% for product in top_products%}
+            <article class="product-card-elite">
+                <a href="{{ url_for('product', id=product.id) }}">
+                    <div class="card-img-wrapper">
+                        <img class="card-img" src="{{ product.image_url if product.image_url and product.image_url != 'MISSING' else url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}"
+                            onerror="this.src='{{ url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}'"
+                            alt="{{ product.product_name }}">
+                        <a href="{{ url_for('product', id=product.id) }}" class="quick-add-btn">View Details</a>
+                    </div>
+                </a>
+                <div class="card-info">
+                    <h4 class="card-title truncate">{{product.product_name}}</h4>
+                    <p class="card-price">
+                        {{ format_currency(product.price) }}
+                    </p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="height: 80px;"></div>
+
+    <div class="product-group">
+        <div class="grid-title-wrapper">
+            <h3 class="grid-title">Must buy</h3>
+            <a href="{{ url_for('category', category_name='all') }}" class="grid-link">Shop All</a>
+        </div>
+
+        <div class="high-end-grid">
+            {% for product in random_products%}
+            <article class="product-card-elite">
+                <a href="{{ url_for('product', id=product.id) }}">
+                    <div class="card-img-wrapper">
+                        <img class="card-img" src="{{ product.image_url if product.image_url and product.image_url != 'MISSING' else url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}"
+                            onerror="this.src='{{ url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}'"
+                            alt="{{ product.product_name }}">
+                        <a href="{{ url_for('product', id=product.id) }}" class="quick-add-btn">View Details</a>
+                    </div>
+                </a>
+                <div class="card-info">
+                    <h4 class="card-title truncate">{{product.product_name}}</h4>
+                    <p class="card-price">
+                        {{ format_currency(product.price) }}
+                    </p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename = 'main_page/main_page.js')}}"></script>
+{% endblock %}

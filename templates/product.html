@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}{{ spec.product_name if spec.product_name else 'Product Details' }} | Cosmetz{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename = 'product/product.css')}}">
+{% endblock %}
+
+{% block content %}
+
+<div class="product-page-wrapper">
+
+    <nav class="breadcrumbs">
+        <a href="{{ url_for('home') }}">Home</a>
+        <span class="sep">/</span>
+        <a href="{{ url_for('category', category_name=category) }}">{{ category if category else 'Shop' }}</a>
+        <span class="sep">/</span>
+        <span class="current">{{ spec.product_name }}</span>
+    </nav>
+
+    <div class="product-main-container">
+
+        <div class="product-gallery">
+            <div class="main-image-frame">
+                <img src="{{ spec.image_url if spec.image_url and spec.image_url != 'MISSING' else url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}"
+                    onerror="this.src='{{ url_for('static', filename='images/cosmetic-retouched-2-web-.jpg') }}'" alt="{{ spec.product_name }}"
+                    id="mainImage">
+            </div>
+        </div>
+
+        <div class="product-details-panel">
+
+            <h1 class="p-title">{{ spec.product_name }}</h1>
+            <p class="p-brand">{{ spec.brand }}</p>
+
+            <div class="p-price-wrapper">
+                <span class="p-price">{{ format_currency(spec.price) }}</span>
+            </div>
+
+            <div class="p-actions">
+                <div class="quantity-selector">
+                    <button type="button" id="minusBtn">−</button>
+                    <input type="number" id="qtyInput" value="1" min="1" readonly>
+                    <button type="button" id="plusBtn">+</button>
+                </div>
+                <button class="btn-add-cart" onclick="handleCart({{ spec.id }}, 'add')">Add to Cart</button>
+            </div>
+
+            <button class="btn-buy-now" onclick="handleCart({{ spec.id }}, 'buy_now')">Buy It Now</button>
+
+            <div class="accordion-container">
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span>Product Specifications</span>
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <table class="spec-table">
+                            <tr>
+                                <td>Category</td>
+                                <td><p style="text-transform: capitalize">{{ spec.category }}</p></td>
+                            </tr>
+                            <tr>
+                                <td>Subcategory</td>
+                                <td><p style="text-transform: capitalize">{{ spec.subcategory }}</td>
+                            </tr>
+                            <tr>
+                                <td>Form</td>
+                                <td><p style="text-transform: capitalize">{{ spec.form }}</td>
+                            </tr>
+                            <tr>
+                                <td>Size</td>
+                                <td>{{ spec.size }}</td>
+                            </tr>
+                            <tr>
+                                <td>Origin</td>
+                                <td>{{ spec.country }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span>Reviews ({{ total_comments }})</span>
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <div class="accordion-content">
+
+                        {% if session.get('username') %}
+                        <form id="commentFormAjax" class="review-form">
+                            <textarea id="commentText" name="comment_content" placeholder="Share your thoughts..."
+                                required></textarea>
+                            <button type="submit" class="btn-submit-review">Post Review</button>
+                        </form>
+                        {% else %}
+                        <p class="login-prompt">Please <a href="{{ url_for('login') }}">login</a> to leave a review.</p>
+                        {% endif %}
+
+                        <div id="commentListContainer" class="reviews-list">
+                            {% for c in comments %}
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <span class="reviewer-name">{{ c.user_name }}</span>
+                                    <span class="review-date">{{ c.date_posted.strftime('%d %b %Y') }}</span>
+                                </div>
+                                <p class="review-body">{{ c.content }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if pagination.pages > 1 %}
+                        <div class="comments-pagination">
+                            {% if pagination.has_prev %}
+                            <button class="pagination-link" data-page="{{ pagination.prev_num }}">← Previous</button>
+                            {% endif %}
+
+                            {% for page_num in pagination.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num == pagination.page %}
+                                    <span class="pagination-page active">{{ page_num }}</span>
+                                    {% else %}
+                                    <button class="pagination-page" data-page="{{ page_num }}">{{ page_num }}</button>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if pagination.has_next %}
+                            <button class="pagination-link" data-page="{{ pagination.next_num }}">Next →</button>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script> const CURRENT_PRODUCT_ID = "{{ spec.id }}"; </script>
+<script src="{{url_for('static', filename = 'product/product.js')}}"></script>
+{% endblock %}

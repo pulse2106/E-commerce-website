@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Management | Cosmetz Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/admin.css') }}">
+    <style>
+        .id-link {
+            color: var(--primary-charcoal);
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent-sand);
+        }
+        .id-link:hover {
+            color: var(--accent-sand);
+            border-bottom-color: var(--primary-charcoal);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="cosmetz-logo-1">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Cosmetz" class="header-logo-img">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item">Dashboard</a>
+                <a href="{{ url_for('admin_orders') }}" class="nav-item">Orders</a>
+                <a href="{{ url_for('admin_products') }}" class="nav-item active">Products</a>
+                <a href="{{ url_for('admin_customers') }}" class="nav-item">Customers</a>
+                <a href="{{ url_for('home') }}" class="nav-item">Back to Site</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-header">
+                <h1 class="admin-title">Products Inventory</h1>
+                <div class="user-profile">Administrator</div>
+            </header>
+
+            <div class="search-section">
+                <form action="{{ url_for('admin_products') }}" method="GET" class="search-form">
+                    <input type="text" name="search_query" placeholder="Search by Product ID..." class="search-input" value="{{ request.args.get('search_query', '') }}">
+                    <button type="submit" class="search-btn">Search</button>
+                    {% if request.args.get('search_query') %}
+                        <a href="{{ url_for('admin_products') }}" class="search-btn" style="background-color: #999; text-align:center; display:flex; align-items:center; justify-content:center;">Clear</a>
+                    {% endif %}
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Views</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if products %}
+                            {% for product in products %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('product', id=product.id) }}" target="_blank" class="id-link">
+                                        #{{ product.id }}
+                                    </a>
+                                </td>
+                                <td>{{ product.product_name }}</td>
+                                <td>{{ product.category }}</td>
+                                <td>${{ "{:,.2f}".format(product.price) }}</td>
+                                <td>{{ product.access }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px; color: #888;">
+                                    No products found.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                {% if not request.args.get('search_query') %}
+                <div class="pagination-wrapper" style="margin-top: 20px; display: flex; gap: 10px;">
+                    {% if pagination.has_prev %}
+                        <a href="{{ url_for('admin_products', page=pagination.prev_num) }}" class="nav-item" style="color: var(--primary-charcoal); border: 1px solid var(--accent-sand);">Previous</a>
+                    {% endif %}
+                    
+                    <span style="padding: 12px;">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+
+                    {% if pagination.has_next %}
+                        <a href="{{ url_for('admin_products', page=pagination.next_num) }}" class="nav-item" style="color: var(--primary-charcoal); border: 1px solid var(--accent-sand);">Next</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Cosmetz - Elite Beauty{% endblock %}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'base/base.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div id="flash-container">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block header %}
+    <header class="main-header" id="mainHeader">
+        <div class="header-inner">
+
+            <div class="header-left-group">
+                <div class="menu-trigger" id="menuTrigger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="cosmetz-logo-1">
+                    <a href="{{ url_for('home') }}">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Cosmetz"
+                            class="header-logo-img">
+                    </a>
+                </div>
+                <form id="searchContainer" class="search-bar" action="{{ url_for('category', category_name='all') }}" method="GET" role="search" aria-label="Search products">
+                    <input id="searchInput" name="q" type="text" placeholder="Find a product..." aria-label="Search query">
+                    <button id="searchBtn" type="submit" aria-label="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="header-right">
+                <div class="currency-selector" style="margin-right: 20px;">
+                    <select onchange="location = this.value;" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; background: transparent; color: var(--secondary-linen); font-size: 0.85rem; cursor: pointer;">
+                        <option value="{{ url_for('set_currency', currency_code='INR') }}" style="color: #333;" {% if session.get('currency', 'INR') == 'INR' %}selected{% endif %}>INR (₹)</option>
+                        <option value="{{ url_for('set_currency', currency_code='USD') }}" style="color: #333;" {% if session.get('currency', 'INR') == 'USD' %}selected{% endif %}>USD ($)</option>
+                    </select>
+                </div>
+
+                <div class="auth-links">
+                    {% if session.get("username") %}
+
+                    {% if session.get("is_admin") %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="auth-link"
+                        style="color: var(--accent-sand); font-weight: bold; margin-right: 15px;">
+                        <i class="fa-solid fa-chart-line"></i> Admin
+                    </a>
+                    <span class="divider">|</span>
+                    {% endif %}
+
+                    <a href="{{url_for('dashboard')}}" class="username auth-link">
+                        {{ session['username'] }}
+                    </a>
+                    <span class="divider">|</span>
+                    <a href="{{url_for('logout')}}" class="auth-link">Logout</a>
+
+                    {% else %}
+                    <a href="{{url_for('login')}}" class="auth-link">Login</a>
+                    <span class="divider">|</span>
+                    <a href="{{url_for('register')}}" class="auth-link">Sign up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="main-menu-dropdown" id="mainMenuDropdown">
+        <a href="{{ url_for('category', category_name='all') }}" class="menu-link">View All</a>
+        <a href="{{ url_for('category', category_name='Skincare') }}" class="menu-link">Skin Care</a>
+        <a href="{{ url_for('category', category_name='Body') }}" class="menu-link">Body</a>
+        <a href="{{ url_for('category', category_name='Eyes') }}" class="menu-link">Eyes</a>
+        <a href="{{ url_for('category', category_name='Face') }}" class="menu-link">Face</a>
+        <a href="{{ url_for('category', category_name='Lips') }}" class="menu-link">Lips</a>
+        <a href="{{ url_for('category', category_name='Hair') }}" class="menu-link">Hair</a>
+    </div>
+
+    {% endblock %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <footer class="main-footer">
+        <div class="footer-inner">
+            <div class="footer-about">
+                <h3>About Cosmetz</h3>
+                <p>
+                    Cosmetz is your sophisticated destination for elite beauty.
+                    We curate products that define quality, simplicity, and elegance.
+                </p>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <p>Email: concierge@cosmetz.com</p>
+                <p>Phone: +91 00 000 0000</p>
+                <p>Address: Elite Plaza, Mumbai, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> Cosmetz. All rights reserved.</p>
+        </div>
+    </footer>
+    {% endblock %}
+
+    {% block scripts %}
+    {% endblock %}
+
+    <script src="{{url_for('static', filename='js/pagination-utils.js')}}"></script>
+    <script src="{{url_for('static', filename='base/base.js')}}"></script>
+
+</body>
+
+</html>

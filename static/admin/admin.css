@@ -1,0 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Helvetica+Neue:wght@400;500;700&display=swap');
+
+:root {
+    --primary-charcoal: #2D2926;
+    --secondary-linen: #F5EBE0;
+    --accent-sand: #D4A373;
+    --white: #ffffff;
+    --shadow: 0 4px 20px rgba(0,0,0,0.05);
+    --sidebar-width: 240px; 
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--secondary-linen);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--primary-charcoal);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+a { 
+    text-decoration: none; 
+    transition: 0.3s; 
+}
+
+/* ==========================================
+   SIDEBAR: FIXED TO THE LEFT
+   ========================================== */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--primary-charcoal);
+    color: var(--secondary-linen);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-logo-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 40px;
+    filter: brightness(0) saturate(100%) invert(88%) sepia(12%) saturate(300%) hue-rotate(330deg) brightness(102%) contrast(92%);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-item {
+    color: rgba(245, 235, 224, 0.6);
+    padding: 12px 15px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+}
+
+.nav-item:hover, .nav-item.active {
+    background-color: rgba(255,255,255,0.05);
+    color: var(--accent-sand);
+}
+
+/* ==========================================
+   MAIN CONTENT
+   ========================================== */
+.admin-content {
+    margin-left: var(--sidebar-width); 
+    width: auto; 
+    padding: 40px;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 20px;
+}
+
+.admin-title {
+    font-size: 2.5rem;
+}
+
+/* ==========================================
+   DATA TABLES
+   ========================================== */
+.table-container {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    background: #fcfcfc;
+    border-bottom: 2px solid var(--secondary-linen);
+    color: #888;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid var(--secondary-linen);
+    font-size: 0.95rem;
+}
+
+/* ==========================================
+   SEARCH BAR UI (NEW ADDITION)
+   ========================================== */
+.search-section {
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    max-width: 500px; /* Limits width so it doesn't stretch too far */
+}
+
+.search-input {
+    flex: 1; /* Takes up remaining space */
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.95rem;
+    background-color: var(--white);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-sand);
+    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
+}
+
+.search-btn {
+    background-color: var(--primary-charcoal);
+    color: var(--white);
+    border: none;
+    padding: 0 25px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.search-btn:hover {
+    background-color: var(--accent-sand);
+    color: var(--primary-charcoal);
+}
+
+/* ==========================================
+   KPI CARDS
+   ========================================== */
+.kpi-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.kpi-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border-top: 4px solid var(--accent-sand);
+}
+
+.kpi-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+/* ==========================================
+   CHARTS SECTION
+   ========================================== */
+.chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* ==========================================
+   ACTION BUTTONS (Make Admin / Revoke)
+   ========================================== */
+.btn-action {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: 0.2s;
+}
+
+/* "Make Admin" Button - Dark / Accent Hover */
+.btn-action.grant {
+    background-color: var(--primary-charcoal);
+    color: var(--white);
+    border: 1px solid var(--primary-charcoal);
+}
+
+.btn-action.grant:hover {
+    background-color: var(--accent-sand);
+    border-color: var(--accent-sand);
+    color: var(--primary-charcoal);
+}
+
+/* "Revoke Admin" Button - Red Warning */
+.btn-action.revoke {
+    background-color: transparent;
+    color: #c0392b; /* Red */
+    border: 1px solid #c0392b;
+}
+
+.btn-action.revoke:hover {
+    background-color: #c0392b;
+    color: white;
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+   ========================================== */
+@media (max-width: 992px) {
+    .kpi-row, 
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 15px;
+    }
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+    .admin-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+    .admin-title {
+        font-size: 1.8rem;
+    }
+    .search-form {
+        max-width: 100%; /* Full width on mobile */
+    }
+}

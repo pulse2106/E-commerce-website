@@ -1,0 +1,366 @@
+/* ====== GOOGLE FONTS ====== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ====== VARIABLES ====== */
+:root {
+    --primary-charcoal: #2D2926;
+    --secondary-linen: #F5EBE0;
+    --accent-sand: #D4A373;
+    --text-dark: #1a1a1a;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+    /* Variable for Header Height to keep things consistent */
+    --header-height: 120px; 
+}
+
+/* ====== RESET & GAP FIX ====== */
+body {
+    background-color: var(--secondary-linen);
+    overflow-x: hidden;
+}
+
+/* CRITICAL FIX: 
+   Set padding to 0. 
+   We will handle the spacing inside the hero section instead.
+   This ensures the image touches the very top of the browser.
+*/
+main {
+    padding-top: 0 !important;
+}
+
+/* ====== HERO VIDEO SECTION ====== */
+.hero-video-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--primary-charcoal);
+}
+
+/* Video Backdrop */
+.hero-video-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 1;
+    transition: filter 0.1s linear;
+}
+
+/* Overlay */
+.hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(45,41,38,0.4), rgba(45,41,38,0.2));
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Content */
+.hero-content {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--secondary-linen);
+    padding: 0 20px;
+    margin-top: 40px; /* Offset for visual balance */
+}
+
+.hero-title {
+    font-family: var(--font-serif);
+    font-size: 5rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 40px;
+    color: var(--accent-sand);
+}
+
+.hero-btn {
+    display: inline-block;
+    padding: 15px 40px;
+    border: 1px solid var(--secondary-linen);
+    color: var(--secondary-linen);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(5px);
+}
+
+.hero-btn:hover {
+    background-color: var(--secondary-linen);
+    color: var(--primary-charcoal);
+    transform: translateY(-5px);
+}
+
+.main-logo-img {
+    display: block;
+    height: 150px;
+    width: auto;
+    /* Filter to recolor black logo to Soft Linen/Gold */
+    filter: brightness(0) saturate(100%) invert(88%) sepia(12%) saturate(300%) hue-rotate(330deg) brightness(102%) contrast(92%);
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====== MARQUEE BANNER ====== */
+.marquee-container {
+    background-color: var(--primary-charcoal);
+    color: var(--accent-sand);
+    padding: 15px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 1px solid rgba(212, 163, 115, 0.2);
+    border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marquee 30s linear infinite;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.marquee-content span {
+    margin: 0 40px;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* ====== CATEGORY NAV & DROPDOWN ====== */
+.category-nav-section {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: var(--secondary-linen);
+}
+
+.section-header h2 {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    color: var(--primary-charcoal);
+    margin-bottom: 10px;
+}
+
+/* Dropdown Container */
+.custom-dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 30px;
+    z-index: 100;
+}
+
+.dropdown-trigger {
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    color: var(--primary-charcoal);
+    border-bottom: 2px solid var(--accent-sand);
+    padding: 10px 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.dropdown-trigger:hover {
+    color: var(--accent-sand);
+}
+
+.dropdown-trigger i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-trigger.active i {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 300px;
+    background-color: var(--primary-charcoal);
+    padding: 20px 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 15px 30px;
+    color: rgba(245, 235, 224, 0.6);
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    color: var(--secondary-linen);
+    background-color: rgba(255,255,255,0.05);
+    letter-spacing: 0.2em;
+}
+
+/* ====== PRODUCT GRID ====== */
+.products-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+}
+
+.grid-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(45, 41, 38, 0.1);
+}
+
+.grid-title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    color: var(--primary-charcoal);
+}
+
+.grid-link {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--accent-sand);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.grid-link:hover {
+    border-bottom: 1px solid var(--accent-sand);
+}
+
+.high-end-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.product-card-elite {
+    background: transparent;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+}
+
+.product-card-elite:hover {
+    transform: translateY(-10px);
+}
+
+.card-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-color: #e0e0e0;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+
+.product-card-elite:hover .card-img {
+    transform: scale(1.1);
+}
+
+.quick-add-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.9);
+    color: var(--primary-charcoal);
+    padding: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.product-card-elite:hover .quick-add-btn {
+    transform: translateY(0);
+}
+
+.card-info {
+    text-align: center;
+}
+
+.card-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: var(--primary-charcoal);
+}
+
+.card-price {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--accent-sand);
+}
+
+/* ====== ANIMATIONS ====== */
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .high-end-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-title { font-size: 3.5rem; }
+}
+
+@media (max-width: 600px) {
+    .high-end-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 2.5rem; }
+}
