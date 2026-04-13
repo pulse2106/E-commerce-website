@@ -34,9 +34,10 @@ pip install -r requirements.txt
 
 1. Create and activate a virtual environment.
 2. Install dependencies with `pip install -r requirements.txt`.
-3. Configure your MySQL database connection in `app.py`.
-4. Import the schema from `Sequels.sql` if you want to preload the tables and sample data.
-5. Start the application with `python app.py`.
+3. Create a local env file by copying `.env.example` to `.env`.
+4. Fill in your database and secret values in `.env`.
+5. Import the schema from `Sequels.sql` if you want to preload the tables and sample data.
+6. Start the application with `python app.py`.
 
 By default, the app runs in debug mode and listens on `http://127.0.0.1:5000/`.
 
@@ -91,6 +92,7 @@ Handles admin-only pages:
 
 ## Notes
 
-- The database credentials are currently hardcoded in `app.py`. Replace them with your own values before deploying or sharing the project.
+- Secrets are loaded from `.env` using `python-dotenv`.
+- Keep `.env` private and committed only `.env.example` for shared configuration templates.
 - The application uses MySQL with `mysql-connector-python` and SQLAlchemy.
 - Admin access is checked through the session state, so create or mark at least one admin user in the database before using the admin pages.

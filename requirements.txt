@@ -1,6 +1,7 @@
 Flask
 Flask-SQLAlchemy
 mysql-connector-python
+python-dotenv
 pandas
 plotly
 SQLAlchemy
