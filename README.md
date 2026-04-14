@@ -34,8 +34,18 @@ pip install -r requirements.txt
 
 1. Create and activate a virtual environment.
 2. Install dependencies with `pip install -r requirements.txt`.
-3. Create a local env file by copying `.env.example` to `.env`.
-4. Fill in your database and secret values in `.env`.
+3. Create a `.env` file in the project root.
+4. Add your environment variables to `.env`:
+
+```env
+FLASK_SECRET_KEY=replace-with-a-strong-secret
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=your-db-password
+DB_NAME=cosmetz_db
+DB_PORT=3306
+```
+
 5. Import the schema from `Sequels.sql` if you want to preload the tables and sample data.
 6. Start the application with `python app.py`.
 
@@ -93,6 +103,6 @@ Handles admin-only pages:
 ## Notes
 
 - Secrets are loaded from `.env` using `python-dotenv`.
-- Keep `.env` private and committed only `.env.example` for shared configuration templates.
+- Keep `.env` private and never commit it to git.
 - The application uses MySQL with `mysql-connector-python` and SQLAlchemy.
 - Admin access is checked through the session state, so create or mark at least one admin user in the database before using the admin pages.
